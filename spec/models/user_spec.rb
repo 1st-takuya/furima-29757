@@ -26,13 +26,18 @@ require 'rails_helper'
         @user.email = "aaa@gmail.com"
         expect(@user).to be_valid
       end
+      it "メールアドレスは@を含まなければならない" do
+        @user.email = "gmail.com"
+        @user.valid?
+        expect(@user.errors.full_messages).to include("Email is invalid") 
+      end
       it "パスワードが必須であること" do
         @user.password = ""
         @user.valid?
         expect(@user.errors.full_messages).to include("Password can't be blank")
       end
       it "パスワードは6文字以上であること" do
-        @user.password = "123456"
+        @user.password = "12345"
         @user.password_confirmation = "123456"
         @user.valid?
         expect(@user.errors.full_messages).to include("Password is invalid")
@@ -43,13 +48,24 @@ require 'rails_helper'
         @user.valid?
         expect(@user).to be_valid
       end
+      it "パスワードは英字のみでは登録できない" do
+        @user.password = "aaaaaa"
+        @user.password_confirmation = "aaaaaa"
+        @user.valid?
+        expect(@user.errors.full_messages).to include("Password is invalid")
+      end
+      it "パスワードは数字のみでは登録できない" do
+        @user.password = "111111"
+        @user.password_confirmation = "111111"
+        @user.valid?
+        expect(@user.errors.full_messages).to include("Password is invalid")
+      end
       it "パスワードは確認用を含めて2回入力すること" do
         @user.password_confirmation = ""
         @user.valid?
         expect(@user.errors.full_messages).to include("Password confirmation doesn't match Password")
       end
-      it "新規登録・ログイン共にエラーハンドリングができていること（適切では無い値が入力された場合、情報は受け入れられず、エラーメッセージを出力させる）" do
-      end
+      
       it "ユーザー本名に名前が必須であること" do
         @user.first_name = ""
         @user.valid?
@@ -64,32 +80,52 @@ require 'rails_helper'
         @user.first_name = "山田"
         expect(@user).to be_valid
       end
+      it "ユーザー本名の名前は全角（漢字・ひらがな・カタカナ）以外では登録できない" do
+        @user.first_name = "ﾅﾏｴ"
+        @user.valid?
+        expect(@user.errors.full_messages).to include("First name is invalid")
+      end
       it "ユーザー本名の苗字は全角（漢字・ひらがな・カタカナ）で入力させること" do
         @user.last_name = "太郎"
         expect(@user).to be_valid
       end
+      it "ユーザー本名の苗字は全角（漢字・ひらがな・カタカナ）以外では登録できない" do
+        @user.last_name = "ﾐｮｳｼﾞ"
+        @user.valid?
+        expect(@user.errors.full_messages).to include("Last name is invalid")
+      end
       it "ユーザー本名の名前にはフリガナが必須であること" do
         @user.first_name_kana = ""
         @user.valid?
-        expect(@user.errors.full_messages).to include("First name kana is invalid") 
+        expect(@user.errors.full_messages).to include("First name kana can't be blank") 
       end
       it "ユーザー本名の苗字にはフリガナが必須であること" do
         @user.last_name_kana = ""
         @user.valid?
-        expect(@user.errors.full_messages).to include("Last name kana is invalid") 
+        expect(@user.errors.full_messages).to include("Last name kana can't be blank") 
       end
       it "ユーザー本名の名前にはフリガナは全角（カタカナ）で入力させること" do
-        @user.first_name_kana = "ヤマダ"
+        @user.first_name_kana = "タロウ"
         expect(@user).to be_valid
+      end
+      it "ユーザー本名の名前にはフリガナは全角（カタカナ）でないと登録できない" do
+        @user.first_name_kana = "たろう"
+        @user.valid?
+        expect(@user.errors.full_messages).to include("First name kana is invalid") 
       end
       it "ユーザー本名の苗字にはフリガナは全角（カタカナ）で入力させること" do
-        @user.last_name_kana = "タロウ"
+        @user.last_name_kana = "ヤマダ"
         expect(@user).to be_valid
       end
-      it "生年月日が必須であること" do
-        @user.birth_day = "2020-10-31"
+      it "ユーザー本名の苗字にはフリガナは全角(カタカナ)でないと登録できない" do
+        @user.last_name_kana = "やまだ"
         @user.valid?
-        expect(@user).to be_valid
-    end
+        expect(@user.errors.full_messages).to include("Last name kana is invalid") 
+      end
+      it "生年月日が空ではないこと" do
+        @user.birth_day = ""
+        @user.valid?
+        expect(@user.errors.full_messages).to include("Birth day can't be blank")
+      end
   end
 end
