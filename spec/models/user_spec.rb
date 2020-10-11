@@ -6,7 +6,7 @@ require 'rails_helper'
       end
       describe 'ユーザー新規登録' do
       it "ニックネームが必須(空ではない)であること" do
-        @user.nickname = ""
+        @user.user = ""
         @user.valid?
         expect(@user.errors.full_messages).to include("Nickname can't be blank")  
       end
