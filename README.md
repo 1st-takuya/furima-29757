@@ -29,7 +29,7 @@ Things you may want to cover:
 | birth_day       | date   | null: false |
 ### Association
 - has_many :items
-- has_many :managements
+- has_many :orders
 
 ## items テーブル
 | Column       | Type       | Options                        |
@@ -45,9 +45,9 @@ Things you may want to cover:
 | user         | reference  | null: false, foreign_key: true |
 ### Association
 - belongs_to :user
-- has_one :management
+- has_one :order
 
-## managementsテーブル
+## ordersテーブル
 | Column       | Type       | Options                        |
 | ------------ | ---------- | ------------------------------ |
 | user         | reference  | null: false, foreign_key: true |
@@ -61,13 +61,14 @@ Things you may want to cover:
 | Column        | Type       | Options                        |
 | ------------- | ---------- | ------------------------------ |
 | postal_code   | string     | null: false                    |
-| prefectures_id| integer    | null: false                    |
+| shipping_id   | integer    | null: false                    |
 | municipality  | string     | null: false                    |
 | house_number  | string     | null: false                    | 
 | building_name | string     |                                |
 | phone_number  | string     | null: false                    |
+| user_id       | integer    | null: false                    |
 ### Association
-- belongs_to :management
+- belongs_to :order
 
 
 * Database initialization
